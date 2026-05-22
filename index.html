@@ -176,7 +176,7 @@
     <!-- OVERLAY DE INICIO (Control del Backstage) -->
     <div id="intro-overlay">
         <div class="intro-title">EMBER - Show Tecnológico Final (14 Secciones)</div>
-        <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 5px;">Textos reducidos. Animaciones numéricas activadas.</p>
+        <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 5px;">Contadores numéricos puros (desde 0). Efecto Startup.</p>
         <p style="color: var(--text-secondary); font-size: 1rem;">Navegación: Teclas ← / → o clic en los bordes de la pantalla.</p>
         <button class="start-btn" onclick="startPresentation()">Arrancar Show</button>
     </div>
@@ -222,7 +222,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 5: ENTORNO RECREADO (TEXTO REDUCIDO) -->
+        <!-- SECCIÓN 5: ENTORNO RECREADO -->
         <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1920&q=80');">
             <div class="overlay"></div>
             <div class="content">
@@ -232,7 +232,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 6: CÓMO HICIERON LA SIMULACIÓN (TEXTOS REDUCIDOS) -->
+        <!-- SECCIÓN 6: CÓMO HICIERON LA SIMULACIÓN -->
         <div class="slide">
             <div class="content">
                 <h2>ARQUITECTURA DIGITAL</h2>
@@ -256,26 +256,26 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 7: MAGNITUD DEL SISTEMA (NÚMEROS ANIMADOS Y TEXTO CORTO) -->
+        <!-- SECCIÓN 7: MAGNITUD DEL SISTEMA (EFECTO CIENTOS DE MILES DESDE 0) -->
         <div class="slide">
             <div class="content">
                 <h2>MAGNITUD DEL DESARROLLO</h2>
                 <div class="grid-2">
                     <div class="card">
-                        <h1 class="massive count-up" data-target="98000" data-prefix="+">0</h1>
+                        <h1 class="massive count-up" data-target="98000" data-prefix="+" style="font-size: clamp(3.5rem, 6vw, 7rem);">0</h1>
                         <h3>LÍNEAS DE CÓDIGO</h3>
                         <p>Conexión de sensores, físicas de interacción y el motor lógico virtual.</p>
                     </div>
                     <div class="card">
-                        <h1 class="massive count-up" data-target="500" data-suffix="K">0K</h1>
-                        <h3>PARTES Y BLOQUES</h3>
+                        <h1 class="massive count-up" data-target="1000000" data-prefix="+" style="font-size: clamp(3.5rem, 6vw, 7rem);">0</h1>
+                        <h3>BLOQUES Y PARTES</h3>
                         <p>Piezas ensambladas meticulosamente para componer el entorno 3D.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- SECCIÓN 8: COMPLEJIDAD DEL PROYECTO (TEXTO CORTO) -->
+        <!-- SECCIÓN 8: COMPLEJIDAD DEL PROYECTO -->
         <div class="slide">
             <div class="content">
                 <h1 style="font-size: clamp(4rem, 7vw, 8rem); margin-bottom: 30px;">INTEGRACIÓN ABSOLUTA.</h1>
@@ -382,18 +382,18 @@
             if (index < 0) index = 0;
             if (index >= slides.length) index = slides.length - 1;
 
-            // Reset numbers in the current slide before leaving
+            // Reinicia los números para que siempre comiencen de cero al entrar de nuevo
             resetNumbers(slides[currentSlide]);
 
             slides.forEach(slide => slide.classList.remove('active'));
             currentSlide = index;
             slides[currentSlide].classList.add('active');
 
-            // Trigger animations for the new active slide
+            // Dispara animaciones de la diapositiva actual
             animateNumbers(slides[currentSlide]);
         }
 
-        // --- LÓGICA DE ANIMACIÓN NUMÉRICA (COUNT-UP) ---
+        // --- LÓGICA DE ANIMACIÓN NUMÉRICA MEJORADA (COUNT-UP) ---
         function animateNumbers(slide) {
             const counters = slide.querySelectorAll('.count-up');
             counters.forEach(counter => {
@@ -401,29 +401,31 @@
                 const prefix = counter.getAttribute('data-prefix') || '';
                 const suffix = counter.getAttribute('data-suffix') || '';
                 
-                // Set initial to 0
+                // Set initial strictly to 0
                 counter.innerText = `${prefix}0${suffix}`;
                 
-                // Animation settings
-                const duration = 1500; // 1.5 seconds
+                // Settings de animación para darle más drama a los números grandes
+                const duration = 2000; // 2 Segundos de impacto cinemático
                 const frameRate = 1000 / 60; // 60fps
                 const totalFrames = Math.round(duration / frameRate);
                 const increment = target / totalFrames;
                 
                 let current = 0;
                 
-                // Pequeño retraso para que empiece a animarse DESPUÉS de que el texto suba
+                // Pequeño retraso para que empiece a animarse DESPUÉS del slide-in de CSS
                 setTimeout(() => {
                     const updateCounter = setInterval(() => {
                         current += increment;
                         if (current >= target) {
+                            // Cuando termina, plasma el número exacto con sus comas correctas
                             counter.innerText = `${prefix}${target.toLocaleString('en-US')}${suffix}`;
                             clearInterval(updateCounter);
                         } else {
+                            // Mientras avanza, muestra los números en vivo y con comas
                             counter.innerText = `${prefix}${Math.ceil(current).toLocaleString('en-US')}${suffix}`;
                         }
                     }, frameRate);
-                }, 400); // 400ms delay coincidiendo con la animación CSS
+                }, 400); 
             });
         }
 
